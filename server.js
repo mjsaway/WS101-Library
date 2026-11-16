@@ -18,6 +18,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const COLUMNS = 'book_id, title, author, category, publication_year, quantity';
+const SELECT_COLS = COLUMNS + ', created_at';
 
 // Validate and clean a book payload. Returns { error } or { data }.
 function parseBook(body, requireId) {
@@ -54,11 +55,11 @@ app.get('/api/books', async (req, res) => {
     if (q) {
       const like = `%${q.replace(/[\\%_]/g, '\\$&')}%`;
       result = await pool.query(
-        `SELECT ${COLUMNS} FROM books WHERE title ILIKE $1 OR author ILIKE $1 ORDER BY title`,
+        `SELECT ${SELECT_COLS} FROM books WHERE title ILIKE $1 OR author ILIKE $1 ORDER BY title`,
         [like]
       );
     } else {
-      result = await pool.query(`SELECT ${COLUMNS} FROM books ORDER BY title`);
+      result = await pool.query(`SELECT ${SELECT_COLS} FROM books ORDER BY title`);
     }
     res.json(result.rows);
   } catch (err) {
@@ -73,7 +74,7 @@ app.post('/api/books', async (req, res) => {
   if (error) return res.status(400).json({ error });
   try {
     const result = await pool.query(
-      `INSERT INTO books (${COLUMNS}) VALUES ($1,$2,$3,$4,$5,$6) RETURNING ${COLUMNS}`,
+      `INSERT INTO books (${COLUMNS}) VALUES ($1,$2,$3,$4,$5,$6) RETURNING ${SELECT_COLS}`,
       [data.book_id, data.title, data.author, data.category, data.publication_year, data.quantity]
     );
     res.status(201).json(result.rows[0]);
@@ -91,7 +92,7 @@ app.put('/api/books/:id', async (req, res) => {
   try {
     const result = await pool.query(
       `UPDATE books SET title=$2, author=$3, category=$4, publication_year=$5, quantity=$6
-       WHERE book_id=$1 RETURNING ${COLUMNS}`,
+       WHERE book_id=$1 RETURNING ${SELECT_COLS}`,
       [req.params.id, data.title, data.author, data.category, data.publication_year, data.quantity]
     );
     if (!result.rowCount) return res.status(404).json({ error: 'That book no longer exists.' });

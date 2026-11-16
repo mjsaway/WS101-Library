@@ -3,74 +3,126 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Library Book Records</title>
+  <title>Library Management System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="top">
-    <div class="wrap top-inner">
-      <h1>Library Book Records</h1>
-      <p class="totals" id="totals" aria-live="polite"></p>
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <svg viewBox="0 0 64 40" width="64" height="40" aria-hidden="true">
+        <path d="M2 4h26c2 0 4 1 4 4v28c0-2-2-3-4-3H2z" fill="#e8eef9"/>
+        <path d="M62 4H36c-2 0-4 1-4 4v28c0-2 2-3 4-3h26z" fill="#d3dff3"/>
+        <path d="M8 12h18M8 18h18M8 24h18" stroke="#9fb4d8" stroke-width="2" stroke-linecap="round"/>
+        <path d="M38 12h18M38 18h18M38 24h18" stroke="#9fb4d8" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <div class="brand-name">LIBRARY</div>
+      <p class="brand-tag">Where Every Book Has a Place</p>
     </div>
-  </header>
+    <nav class="nav" aria-label="Main">
+      <a href="#dashboard" data-view="dashboard">DASHBOARD</a>
+      <a href="#records" data-view="records">BOOK RECORDS</a>
+      <a href="#add" data-view="add" id="nav-add">ADD NEW BOOK</a>
+      <a href="#search" data-view="search">SEARCH BOOKS</a>
+      <a href="#all" data-view="all">DISPLAY ALL</a>
+    </nav>
+  </aside>
 
-  <main class="wrap layout">
-    <section class="panel form-panel" aria-labelledby="form-title">
-      <h2 id="form-title">Add a book</h2>
-      <form id="book-form" novalidate>
-        <label>Book ID
-          <input id="book_id" name="book_id" maxlength="30" placeholder="e.g. B-105" required>
-        </label>
-        <label>Book title
-          <input id="title" name="title" required>
-        </label>
-        <label>Author
-          <input id="author" name="author" required>
-        </label>
-        <label>Category
-          <input id="category" name="category" list="categories" placeholder="e.g. Science" required>
-          <datalist id="categories"></datalist>
-        </label>
-        <div class="row">
-          <label>Publication year
-            <input id="publication_year" name="publication_year" type="number" inputmode="numeric" required>
-          </label>
-          <label>Quantity
-            <input id="quantity" name="quantity" type="number" min="0" inputmode="numeric" value="1" required>
-          </label>
-        </div>
-        <p class="form-error" id="form-error" role="alert"></p>
-        <div class="actions">
-          <button type="submit" class="btn primary" id="submit-btn">Add book</button>
-          <button type="button" class="btn" id="cancel-btn" hidden>Cancel edit</button>
-        </div>
-      </form>
+  <main class="main">
+    <!-- Dashboard -->
+    <section id="view-dashboard" class="view" aria-labelledby="h-dashboard">
+      <h1 id="h-dashboard">Library Management System</h1>
+      <p class="sub">Welcome to the Library Book Records System</p>
+      <div class="stats">
+        <div class="stat"><span class="stat-label">Total Books</span><span class="stat-num" id="stat-books">0</span></div>
+        <div class="stat"><span class="stat-label">Total Copies</span><span class="stat-num" id="stat-copies">0</span></div>
+        <div class="stat"><span class="stat-label">Categories</span><span class="stat-num" id="stat-cats">0</span></div>
+      </div>
+      <div class="accs">
+        <details class="acc">
+          <summary><span class="acc-title">Low Stock</span><span class="badge" id="count-low">0</span><svg class="chev" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 9l7 7 7-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <ul class="acc-list" id="list-low"></ul>
+        </details>
+        <details class="acc">
+          <summary><span class="acc-title">Recently Added</span><span class="badge" id="count-recent">0</span><svg class="chev" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 9l7 7 7-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <ul class="acc-list" id="list-recent"></ul>
+        </details>
+        <details class="acc">
+          <summary><span class="acc-title">Categories</span><span class="badge" id="count-cats">0</span><svg class="chev" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 9l7 7 7-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <ul class="acc-list" id="list-cats"></ul>
+        </details>
+      </div>
     </section>
 
-    <section class="panel list-panel" aria-labelledby="list-title">
-      <div class="list-head">
-        <h2 id="list-title">Books</h2>
-        <input id="search" type="search" placeholder="Search by title or author" aria-label="Search by title or author">
+    <!-- Book Records (edit / delete) -->
+    <section id="view-records" class="view" aria-labelledby="h-records" hidden>
+      <h1 id="h-records">Book Records</h1>
+      <p class="sub" id="records-sub"></p>
+      <div class="card" id="records-table"></div>
+      <p class="empty" id="records-empty" hidden>No books yet. Choose Add New Book to create the first record.</p>
+    </section>
+
+    <!-- Add / Edit -->
+    <section id="view-add" class="view" aria-labelledby="h-add" hidden>
+      <h1 id="h-add">Add New Book</h1>
+      <p class="sub" id="add-sub">Fill in every field to add a book to the collection.</p>
+      <div class="card form-card">
+        <form id="book-form" novalidate>
+          <div class="grid2">
+            <label>Book ID
+              <input id="book_id" name="book_id" maxlength="30" placeholder="e.g. B-105" required>
+            </label>
+            <label>Category
+              <input id="category" name="category" list="categories" placeholder="e.g. Science" required>
+              <datalist id="categories"></datalist>
+            </label>
+          </div>
+          <label>Book title
+            <input id="title" name="title" required>
+          </label>
+          <label>Author
+            <input id="author" name="author" required>
+          </label>
+          <div class="grid2">
+            <label>Publication year
+              <input id="publication_year" name="publication_year" type="number" inputmode="numeric" required>
+            </label>
+            <label>Quantity
+              <input id="quantity" name="quantity" type="number" min="0" inputmode="numeric" value="1" required>
+            </label>
+          </div>
+          <p class="form-error" id="form-error" role="alert"></p>
+          <div class="actions">
+            <button type="submit" class="btn primary" id="submit-btn">Add book</button>
+            <button type="button" class="btn" id="cancel-btn" hidden>Cancel edit</button>
+          </div>
+        </form>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th><th>Title</th><th>Author</th><th>Category</th>
-              <th class="num">Year</th><th class="num">Qty</th><th><span class="sr">Actions</span></th>
-            </tr>
-          </thead>
-          <tbody id="rows"></tbody>
-        </table>
-      </div>
-      <p class="empty" id="empty" hidden></p>
+    </section>
+
+    <!-- Search -->
+    <section id="view-search" class="view" aria-labelledby="h-search" hidden>
+      <h1 id="h-search">Search Books</h1>
+      <p class="sub">Find a book by its title or author.</p>
+      <input id="search" class="search-box" type="search" placeholder="Search by title or author" aria-label="Search by title or author">
+      <p class="empty" id="search-msg" aria-live="polite"></p>
+      <div class="card" id="search-results" hidden></div>
+    </section>
+
+    <!-- Display All -->
+    <section id="view-all" class="view" aria-labelledby="h-all" hidden>
+      <h1 id="h-all">Display All</h1>
+      <p class="sub">Every book in the collection, grouped by category.</p>
+      <div id="all-groups"></div>
+      <p class="empty" id="all-empty" hidden>No books yet. Choose Add New Book to create the first record.</p>
     </section>
   </main>
+</div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="app.js"></script>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
 </body>
 </html>
