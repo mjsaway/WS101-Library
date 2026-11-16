@@ -84,7 +84,9 @@ function buildTable(list, withActions) {
   const head = el('tr');
   for (const [label, cls] of [['ID'], ['Title'], ['Author'], ['Category'], ['Year', 'num'], ['Qty', 'num']]) head.append(el('th', label, cls));
   if (withActions) head.append(el('th', 'Actions'));
-  table.append(el('thead')).firstChild.append(head);
+  const thead = el('thead');
+  thead.append(head);
+  table.append(thead);
 
   const tbody = el('tbody');
   for (const b of list) {
