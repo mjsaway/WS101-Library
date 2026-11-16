@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Library Book Records</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <h1>Library Book Records</h1>
+      <p class="totals" id="totals" aria-live="polite"></p>
+    </div>
+  </header>
+
+  <main class="wrap layout">
+    <section class="panel form-panel" aria-labelledby="form-title">
+      <h2 id="form-title">Add a book</h2>
+      <form id="book-form" novalidate>
+        <label>Book ID
+          <input id="book_id" name="book_id" maxlength="30" placeholder="e.g. B-105" required>
+        </label>
+        <label>Book title
+          <input id="title" name="title" required>
+        </label>
+        <label>Author
+          <input id="author" name="author" required>
+        </label>
+        <label>Category
+          <input id="category" name="category" list="categories" placeholder="e.g. Science" required>
+          <datalist id="categories"></datalist>
+        </label>
+        <div class="row">
+          <label>Publication year
+            <input id="publication_year" name="publication_year" type="number" inputmode="numeric" required>
+          </label>
+          <label>Quantity
+            <input id="quantity" name="quantity" type="number" min="0" inputmode="numeric" value="1" required>
+          </label>
+        </div>
+        <p class="form-error" id="form-error" role="alert"></p>
+        <div class="actions">
+          <button type="submit" class="btn primary" id="submit-btn">Add book</button>
+          <button type="button" class="btn" id="cancel-btn" hidden>Cancel edit</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel list-panel" aria-labelledby="list-title">
+      <div class="list-head">
+        <h2 id="list-title">Books</h2>
+        <input id="search" type="search" placeholder="Search by title or author" aria-label="Search by title or author">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Title</th><th>Author</th><th>Category</th>
+              <th class="num">Year</th><th class="num">Qty</th><th><span class="sr">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <p class="empty" id="empty" hidden></p>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
